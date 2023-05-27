@@ -1,18 +1,12 @@
 import Css from './ContactList.module.css';
 import { useSelector } from 'react-redux';
+import { DeleteContacts } from './DeleteButton';
 
-import {
-  useDeleteContactMutation,
-  useFetchContactsQuery,
-} from 'redux/ContactsSlice';
+import { useFetchContactsQuery } from 'redux/ContactsSlice';
 
 export function ContactList() {
   const { data: contacts } = useFetchContactsQuery();
-
-  const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
-
   const filter = useSelector(state => state.filter);
-  console.log(filter);
   const visibleContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
@@ -30,17 +24,7 @@ export function ContactList() {
                     <span className={Css.contactItem}>{item.name}</span>
                     <span className={Css.contactItem}>{item.number}</span>
                   </div>
-                  {
-                    <button
-                      type="button"
-                      onClick={() => {
-                        deleteContact(item.id);
-                      }}
-                      disabled={isDeleting}
-                    >
-                      {isDeleting ? 'Deleting' : 'Delete'}
-                    </button>
-                  }
+                  {<DeleteContacts id={item.id} />}
                 </li>
               </>
             );
