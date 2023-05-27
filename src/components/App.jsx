@@ -4,11 +4,13 @@ import { Section } from './Section/Section';
 import { ContactList } from './ContactList/ContactList';
 
 import { Filter } from './Filter/FilterContacts';
-import { ContactsApi } from 'redux/ContactsSlice';
+import { useFetchContactsQuery } from 'redux/ContactsSlice';
 
 export function App() {
-  const contacts = ContactsApi.useFetchContactsQuery().data;
- 
+  const { data: contacts, error, isFetching } = useFetchContactsQuery();
+  if (error) {
+    alert(error);
+  }
 
   return (
     <>
@@ -16,9 +18,10 @@ export function App() {
         <Form />
       </Section>
       <Section title="Contacts">
+        {isFetching && <p>Loading</p>}
         <Filter />
 
-       {contacts &&  <ContactList />}
+        {contacts && <ContactList />}
       </Section>
     </>
   );

@@ -28,3 +28,8 @@ export const ContactsApi = createApi({
     }),
   }),
 });
+export const {
+  useFetchContactsQuery,
+  useDeleteContactMutation,
+  useAddContactMutation,
+} = ContactsApi;

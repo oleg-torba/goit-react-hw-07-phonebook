@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
-
 import Css from './ContactList.module.css';
 import { useSelector } from 'react-redux';
 
-import { ContactsApi } from 'redux/ContactsSlice';
+import {
+  useDeleteContactMutation,
+  useFetchContactsQuery,
+} from 'redux/ContactsSlice';
 
 export function ContactList() {
-  const contacts = ContactsApi.useFetchContactsQuery().data;
-  useEffect(() => {}, []);
+  const { data: contacts } = useFetchContactsQuery();
 
-  const [deleteContact] = ContactsApi.useDeleteContactMutation();
+  const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
 
   const filter = useSelector(state => state.filter);
   console.log(filter);
@@ -19,31 +19,34 @@ export function ContactList() {
   console.log(visibleContacts);
 
   return (
-    <div>
-      <ul className={Css.contactBlock}>
-        {visibleContacts.map(item => {
-          return (
-            <>
-              <li className={Css.contactList} key={item.id}>
-                <div className={Css.contactValue}>
-                  <span className={Css.contactItem}>{item.name}</span>
-                  <span className={Css.contactItem}>{item.number}</span>
-                </div>
-                {
-                  <button
-                    type="button"
-                    onClick={() => {
-                      deleteContact(item.id);
-                    }}
-                  >
-                    Delete
-                  </button>
-                }
-              </li>
-            </>
-          );
-        })}
-      </ul>
-    </div>
+    <>
+      <div>
+        <ul className={Css.contactBlock}>
+          {visibleContacts.map(item => {
+            return (
+              <>
+                <li className={Css.contactList} key={item.id}>
+                  <div className={Css.contactValue}>
+                    <span className={Css.contactItem}>{item.name}</span>
+                    <span className={Css.contactItem}>{item.number}</span>
+                  </div>
+                  {
+                    <button
+                      type="button"
+                      onClick={() => {
+                        deleteContact(item.id);
+                      }}
+                      disabled={isDeleting}
+                    >
+                      {isDeleting ? 'Deleting' : 'Delete'}
+                    </button>
+                  }
+                </li>
+              </>
+            );
+          })}
+        </ul>
+      </div>
+    </>
   );
 }
